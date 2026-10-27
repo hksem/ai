@@ -3,73 +3,100 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>AI Creative Agent</title>
-</head>
-<body>
-  <p id="status" role="status" aria-live="polite">채팅에 연결하는 중입니다...</p>
-  <div id="webchat" style="height: 600px"></div>
-  <script src="https://cdn.botframework.com/botframework-webchat/4.18.0/webchat.js"></script>
-  <script>
-    const BROKER_URL = "https://dl-broker-juwon-4jt3z.azurewebsites.net/api/directlineToken";
-    const SEALED = "OE8hxeL1RH_ikCZJyUyZm2l5YrsvcEsBZmWlLEojDdOEz9cRcBI15XgC42eW3yPuglxPhiaT5AFjl-nYZ4s364kZpFuBVyZzEzqM1PkxVBVyIkd3luQONK0vFpuA3s08vCrLTMlb5zoY5Nd_e9zwxJQQpLnF_7edUFd3xVgODmAIYbZp-zSxYWlckzauMNU7KHrfzg0GTwpNpsLqJsl2Q5QhV3qF6MQX-5An0RVDX2G17vAqOkr5YIa1KaXYRcypMR-JhKGVOFVYrEeCyrgtB8DL-pFJS3nlntwaiW49O7uhCYHkUWOPcLPLSPahHeS9uS8mvRwB4YkWU1Q7OxIkf8YNoXljGhoWpiIme9_MGqGU43VKfVouLcZxrwvp0qzZwhxvvfGkEAXt7rBXHuP3htfDIzFn5d_TpOFiA52QuJPqj3rH8uiLPQnLRzz07CxWxHyC2LJeeZnA5ihoUIByrhUp3ounsTLyPs_TPln5c8jpW5szB6sXxUirtcwEzjXhZRllfGpX2I8ZbsgLID11K-2VNsFJZaq619RI1nhE2atzpndyzNScs7P-gY4R1wGb2rQBOfeR_ZKkRl9Crfa4wd1FhezkGzyjVKNj6OmRr50MUNV_2Pa5PcpsFwiWeCWYH7po9vWM-9mEz5U";
-    const status = document.getElementById("status");
-
-    function showError(message) {
-      status.hidden = false;
-      status.textContent = message;
+  <title>AI Creative Agent Team — 한 줄의 아이디어로 완성하는 5가지 결과물</title>
+  <!-- 구글 폰트 및 프리텐다드 CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap">
+  <style>
+    /* 디자인 시스템 변수 및 기본 설정 */
+    :root {
+      --bg: #F7F7FB;
+      --text: #14142B;
+      --sub: #6B6B80;
+      --line: rgba(20,20,43,.08);
+      --brand: linear-gradient(120deg, #6E8BFF, #A77BFF 40%, #FF8AC8 70%, #FFB37A);
+      --brand-text: linear-gradient(120deg, #4F6BFF, #8B5CF6 40%, #EC4899 70%, #FF7A45);
+      --glass: rgba(255,255,255,.55);
+      --glass-border: 1px solid rgba(255,255,255,.7);
+      --glass-shadow: 0 30px 80px -30px rgba(76,70,160,.25);
+      --easing: cubic-bezier(.2,1.3,.3,1);
     }
 
-    async function connect() {
-      if (!window.WebChat ||
-          typeof WebChat.createDirectLine !== "function" ||
-          typeof WebChat.renderWebChat !== "function") {
-        showError("채팅 구성 요소를 불러오지 못했습니다. 네트워크를 확인한 뒤 새로고침해 주세요.");
-        return;
-      }
-
-      let response;
-      try {
-        // Keep this a simple CORS request; the broker may not support preflight.
-        response = await fetch(BROKER_URL, {
-          method: "POST",
-          body: JSON.stringify({ sealed: SEALED })
-        });
-      } catch {
-        showError("서버에 연결하지 못했습니다. 네트워크와 배포 주소를 확인해 주세요.");
-        return;
-      }
-      if (!response.ok) {
-        showError("서버가 연결 요청을 처리하지 못했습니다 (HTTP " + response.status + ").");
-        return;
-      }
-
-      let data;
-      try {
-        data = await response.json();
-      } catch {
-        showError("서버 응답을 읽을 수 없습니다. 잠시 후 다시 시도해 주세요.");
-        return;
-      }
-      if (!data || typeof data.token !== "string" || !data.token.trim()) {
-        showError("서버에서 연결 토큰을 받지 못했습니다. 암호와 배포 주소를 확인해 주세요.");
-        return;
-      }
-
-      try {
-        const directLine = WebChat.createDirectLine({ token: data.token });
-        status.hidden = true;
-        directLine.postActivity({
-          type: "event", name: "startConversation", from: { id: "user" }
-        }).subscribe({
-          error: () => showError("첫 인사를 요청하지 못했습니다. 채팅창에 메시지를 입력해 주세요.")
-        });
-        WebChat.renderWebChat({ directLine, locale: "ko-KR" }, document.getElementById("webchat"));
-      } catch {
-        showError("채팅을 시작하지 못했습니다. 새로고침 후 다시 시도해 주세요.");
-      }
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Pretendard Variable', -apple-system, BlinkMacSystemFont, sans-serif;
+      word-break: keep-all;
+      overflow-x: hidden;
+      position: relative;
     }
 
-    connect();
-  </script>
-</body>
-</html>
+    /* 아주 옅은 노이즈 그레인 배경 오버레이 */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      pointer-events: none;
+      opacity: .04;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    }
+
+    /* 공통 유리 스타일 */
+    .glass-box {
+      background: var(--glass);
+      -webkit-backdrop-filter: blur(24px) saturate(160%);
+      backdrop-filter: blur(24px) saturate(160%);
+      border: var(--glass-border);
+      box-shadow: var(--glass-shadow);
+      border-radius: 28px;
+    }
+
+    /* 그라데이션 타이포 및 강조 */
+    .grad-text {
+      background: var(--brand-text);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .serif-it {
+      font-family: 'Instrument Serif', serif;
+      font-style: italic;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+    }
+
+    /* 1. 상단 고정 내비게이션 */
+    .nav-wrap {
+      position: fixed;
+      top: 16px;
+      left: 50%;
+      translate: -50% 0;
+      width: min(1080px, calc(100% - 24px));
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 20px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.75);
+      -webkit-backdrop-filter: blur(24px) saturate(160%);
+      backdrop-filter: blur(24px) saturate(160%);
+      border: var(--glass-border);
+      box-shadow: 0 10px 30px -10px rgba(76,70,160,.15);
+    }
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 14px;
+      white-space: nowrap;
+      text-decoration: none;
+      color: var(--text);
+    }
+    .nav-dot {
+      width
